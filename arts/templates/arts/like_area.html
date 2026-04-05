@@ -1,0 +1,10 @@
+<span id="like-area-{{ article.id }}">
+    <button class="icon-btn" 
+            hx-post="{% url 'arts:like' article.id %}" 
+            hx-target="#like-area-{{ article.id }}" 
+            hx-swap="outerHTML"
+            style="{% if request.user in article.likes.all %}color: #ff4757;{% else %}color: gray;{% endif %}"
+            title="Like">
+        <i class="fa-solid fa-heart"></i> <span style="font-size: 0.9em; color: gray;">{{ article.likes.count }}</span>
+    </button>
+</span>

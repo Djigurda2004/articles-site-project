@@ -1,4 +1,5 @@
 {% extends 'main/more.html' %}
+{%block title%}Articles{%endblock%}
 {% block content %}
     <form method="get" class="mb-3">
         <input type="text" name="q" value="{{ query }}" placeholder="Search..." class="form-control">
@@ -11,8 +12,8 @@
                 <p>{{article.anons}}</p>
                 <a href="{%url 'arts:detail' article.id%}" class="btn btn-warning">More...</a>
                 <i class="fa-solid fa-eye"> {{article.views}}</i>
-                <i class="fa-solid fa-heart"> {{article.total_likes}}</i>
-                <i class="fa-solid fa-comment-dots"> {{article.total_comments}}</i>
+                <i class="fa-solid fa-heart"> {{article.likes.count}}</i>
+                <i class="fa-solid fa-comment-dots"> {{article.comments.count}}</i>
             </div>
         {%empty%}
             <p>There are no articles</p>
@@ -44,4 +45,3 @@
         </ul>
     </nav>
 {% endblock %}
-{%block title%}Articles{%endblock%}

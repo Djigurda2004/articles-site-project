@@ -1,0 +1,61 @@
+<div class="comment-node" id="comment-{{ node.id }}">
+    <div class="comment-content">
+        <div class="comment-meta">
+            <a href="{% url 'users:profile' node.author.username %}">{{ node.author.username }}</a> <span>{{ node.created_at|date:"d M Y H:i" }}</span>
+        </div>
+        <div class="comment-text mb-2">
+            {{ node.text|linebreaks }}
+        </div>
+        <div class="comment-actions d-flex align-items-center gap-3 mb-2">
+            {% if user.is_authenticated %}
+                {% include "comments/like_area.html" with node=node %}
+                <button class="icon-btn text-primary" title="Reply" 
+                        onclick="document.getElementById('reply-box-{{ node.id }}').open = !document.getElementById('reply-box-{{ node.id }}').open">
+                    <i class="fa-solid fa-reply"></i>
+                </button>
+                {% if node.author == request.user %}
+                    <button class="icon-btn text-secondary" title="Edit"
+                            hx-get="{% url 'comments:edit' node.id %}" 
+                            hx-target="#comment-{{ node.id }}" 
+                            hx-swap="outerHTML">
+                        <i class="fa-solid fa-pen"></i>
+                    </button>
+                    <button class="icon-btn text-danger" title="Delete"
+                            hx-post="{% url 'comments:delete' node.id %}"
+                            hx-confirm="Delete this comment?" 
+                            hx-target="#comment-{{ node.id }}" 
+                            hx-swap="outerHTML">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    <details id="reply-box-{{ node.id }}">
+        <summary style="display:none;"></summary>
+        <form hx-post="{% url 'comments:add' node.article.id %}"
+              hx-target="#children-{{ node.id }}" 
+              hx-swap="beforeend"
+              hx-on::after-request="this.closest('details').removeAttribute('open'); this.reset();"
+              class="reply-form ms-3 mb-3 border-start border-2 ps-3">
+            <input type="hidden" name="parent" value="{{ node.id }}">
+            <textarea name="text" class="form-control form-control-sm" rows="2" placeholder="Reply..." required></textarea>
+            <div class="mt-2">
+                <button type="submit" class="btn btn-primary btn-sm">Send</button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="this.closest('details').removeAttribute('open')">Cancel</button>
+            </div>
+        </form>
+    </details>
+    {% if not node.is_leaf_node %}
+        <details open class="mt-1"> 
+            <summary class="text-primary mb-2" style="font-size: 0.8em; cursor: pointer;">
+                <i class="fa-solid fa-chevron-down"></i> Replies {{node.get_descendant_count}}
+            </summary>
+            <div class="children" id="children-{{ node.id }}">
+                {{ children }} 
+            </div>
+        </details>
+    {% else %}
+        <div class="children" id="children-{{ node.id }}"></div>
+    {% endif %}
+</div>

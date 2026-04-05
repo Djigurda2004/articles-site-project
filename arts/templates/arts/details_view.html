@@ -1,63 +1,59 @@
 {% extends 'main/more.html' %}
+{% block title %}{{article.title}}{% endblock %}
 {% load mptt_tags %}
 {% block content %}
-<script src="https://unpkg.com/htmx.org@1.9.6"></script>
-<script>
-    function toggleElement(id, forceShow = false) {
-        var x = document.getElementById(id);
-        if (x) {
-            if (forceShow) {
-                x.style.display = "block";
-            } else {
-                x.style.display = (x.style.display === "none") ? "block" : "none";
-            }
-        }
-    }
-</script>
-<div class="features">
+<script src="https://unpkg.com/htmx.org@1.9.10"></script>
+<style>
+    .comment-tree { margin-top: 20px; }
+    .comment-node { position: relative; padding-left: 15px;margin-bottom: 10px;}
+    .comment-node .children {border-left: 2px solid #e0e0e0; margin-left: 10px;padding-left: 15px;}
+    summary { list-style: none; cursor: pointer; font-weight: bold; color: #555; }
+    summary::-webkit-details-marker { display: none; }
+    .comment-meta { font-size: 0.85em; color: gray; margin-bottom: 5px; }
+    .icon-btn , .comment-actions a {color: gray;background: none; border: none; padding: 0; font-size: 0.85em; cursor: pointer; margin-right: 10px;}
+    .reply-form { margin-top: 10px; margin-bottom: 10px;}
+</style>
+<div class="features" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
     <h1>{{article.title}}</h1>
-    <p>Date of publication: {{article.date}}</p>
     <p>Author: <a href="{%url 'users:profile' article.author.username %}">{{article.author.username}}</a></p>
+    <p>Date of publication: {{article.date}}</p>
+    <p>Views: {{article.views}}</p>
+    <h3>Announcement:</h3>
+    <p>{{article.anons}}</p>
+    <h3>Content:</h3>
     <p>{{article.full_text}}</p>
     <div class="mb-4">
         {% if article.author == request.user %}
-            <a href="{%url 'arts:update' article.id%}" class="btn btn-info">Update article</a>
-            <a href="{%url 'arts:delete' article.id%}" class="btn btn-danger">Delete article</a>
-        {% endif %}
-        {% if user.is_authenticated %}
-            <form action="{% url 'arts:like' article.id %}" method="post" class="d-inline-block">
+            <a href="{% url 'arts:edit' article.id %}" class="icon-btn d-inline-block"><i class="fa-solid fa-pen"></i></a>
+            <form action="{% url 'arts:delete' article.id %}" method="post" class="d-inline-block">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-primary">Like {{ article.total_likes }}</button>
+                <button class="icon-btn"><i class="fa-solid fa-trash"></i></button>
             </form>
         {% endif %}
-    </div>
-    <div class="comments-section mt-5" style="max-width: 800px;">
-        <h3>Comments</h3>
-        {% if user.is_authenticated %}
-            <div class="mb-4">
-                <button class="btn btn-outline-dark mb-2" onclick="toggleElement('main-comment-form')">Add a comment</button>
-                <div id="main-comment-form" style="display: none;">
-                    <form hx-post="{% url 'comments:add' article.id %}" 
-                          hx-target="#root-comments-container" 
-                          hx-swap="afterbegin"
-                          onsubmit="setTimeout(() => { this.reset(); toggleElement('main-comment-form'); }, 100);">
-                        {% csrf_token %}
-                        <textarea name="text" class="form-control mb-2" rows="3" placeholder="Share your thoughts..." required></textarea>
-                        <button type="submit" class="btn btn-success">Post Comment</button>
-                    </form>
-                </div>
-            </div>
-        {% else %}
-            <p><a href="{% url 'users:login' %}">Log in</a> to leave a comment.</p>
+        {% if user.is_authenticated%}
+            {%include 'arts/like_area.html' with article=article%}
         {% endif %}
-        <div id="root-comments-container">
-            {% for comment in article.comments.all %}
-                {% if comment.is_root_node %}
-                    {% include "comments/comments.html" with node=comment %}
-                {% endif %}
-            {% endfor %}
-        </div>
+    </div>
+    <h3>Comments {{ article.comments.count }}</h3>
+    {% if user.is_authenticated %}
+    <div class="mb-4">
+        <form hx-post="{% url 'comments:add' article.id %}" 
+              hx-target="#root-comments" 
+              hx-swap="afterbegin"
+              hx-on::after-request="this.reset()"> 
+              {% csrf_token %}
+            <textarea name="text" class="form-control" placeholder="Write a comment..." rows="2" required></textarea>
+            <button type="submit" class="btn btn-dark mt-2 btn-sm">Post Comment</button>
+        </form>
+    </div>
+    {% else %}
+    <p><a href="{% url 'users:login' %}">Log in</a> to leave a comment.</p>
+    {% endif %}
+    <div id="root-comments" class="comment-tree">
+        {% load mptt_tags %}
+        {% recursetree article.comments.all %}
+            {% include "comments/comment_node.html" with node=node %}
+        {% endrecursetree %}
     </div>
 </div>
 {% endblock %}
-{% block title %}{{article.title}}{% endblock %}

@@ -14,14 +14,8 @@ class Articles(models.Model):
         return f'Article: {self.title}'
     
     def get_absolute_url (self):
-        return f'/article/{self.id}'
+        return f'/arts/{self.id}'
     
     class Meta:
         verbose_name = 'Article'
         verbose_name_plural = 'Articles'
-
-    def total_likes(self):
-        return self.likes.count()
-    
-    def total_comments(self):
-        return self.comments.count()

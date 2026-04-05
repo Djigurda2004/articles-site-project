@@ -36,7 +36,7 @@ class ArtDetailView(DetailView):
         return context
 
 
-class ArtUpdateView(LoginRequiredMixin, UserPassesTestMixin,UpdateView):
+class ArtEditView(LoginRequiredMixin, UserPassesTestMixin,UpdateView):
     model = Articles
     template_name = "arts/addart.html"
     form_class = ArticlesForm
@@ -49,7 +49,6 @@ class ArtUpdateView(LoginRequiredMixin, UserPassesTestMixin,UpdateView):
 class ArtDeleteView(LoginRequiredMixin, UserPassesTestMixin,DeleteView):
     model = Articles
     success_url = '/arts/'
-    template_name = "arts/art_delete.html"
     raise_exception = True
     def test_func(self):
         article = self.get_object()
@@ -80,6 +79,8 @@ def like_article(request,pk):
         article.likes.remove(request.user)
     else:
         article.likes.add(request.user)
+    if request.headers.get('HX-Request'):
+        return render(request,'arts/like_area.html',{'article':article})
     return redirect("arts:detail",pk=pk)
 
 
