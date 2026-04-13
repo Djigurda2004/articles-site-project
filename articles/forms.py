@@ -1,12 +1,12 @@
-from .models import Articles
+from .models import Article
 from django.forms import ModelForm,TextInput,Textarea
 
-class ArticlesForm(ModelForm):
+class ArticleForm(ModelForm):
     class Meta:
-        model =  Articles
-        fields = ['title','anons','full_text']
+        model =  Article
+        fields = ['title','announcement','full_text']
         widgets ={
             "title": TextInput(attrs={'class': 'form-control','placeholder':'Article title'}),
-            "anons": TextInput(attrs={'class': 'form-control','placeholder':'Article announcement'}),
+            "announcement": TextInput(attrs={'class': 'form-control','placeholder':'Article announcement'}),
             "full_text" : Textarea(attrs={'class': 'form-control','placeholder' : 'Article content'})
         }

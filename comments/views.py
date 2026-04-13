@@ -1,12 +1,12 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
-from arts.models import Articles
+from articles.models import Article
 from .models import Comment
 from django.http import HttpResponseForbidden,HttpResponse
 
 @login_required
 def add_comment(request,article_id):
-    article = get_object_or_404(Articles,id=article_id)
+    article = get_object_or_404(Article,id=article_id)
     if request.method == "POST":
         text = request.POST.get("text")
         parent_id = request.POST.get("parent")
@@ -14,7 +14,7 @@ def add_comment(request,article_id):
         comment = Comment.objects.create(article=article,author=request.user,text=text,parent=parent)
         if request.headers.get('HX-Request'):
             return render(request,'comments/comment_node.html',{'node': comment})
-    return redirect('arts:detail',article.id)
+    return redirect('articles:detail',article.id)
 
 @login_required
 def delete_comment(request,comment_id):
@@ -37,7 +37,7 @@ def edit_comment(request,comment_id):
         comment.save()
         if request.headers.get('HX-Request'):
             return render(request,'comments/comment_node.html',{'node':comment})
-    return redirect("arts:detail",comment.article.id)
+    return redirect("articles:detail",comment.article.id)
 
 @login_required
 def like_comment(request,comment_id):
@@ -48,4 +48,4 @@ def like_comment(request,comment_id):
         comment.likes.add(request.user)
     if request.headers.get('HX-Request'):
         return render(request, 'comments/like_area.html', {'node': comment})
-    return redirect('arts:detail',comment.article.id)
+    return redirect('articles:detail',comment.article.id)

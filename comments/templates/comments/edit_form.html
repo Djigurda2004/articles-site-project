@@ -1,18 +1,18 @@
 <form id="comment-{{ node.id }}"
       hx-post="{% url 'comments:edit' node.id %}" 
-      hx-target="this" 
+      hx-target="this"
       hx-swap="outerHTML" 
       class="border p-2 rounded bg-light">
     {% csrf_token %}
-    <textarea name="text" class="form-control mb-2">{{ node.text }}</textarea>
+    <textarea name="text" class="form-control">{{ node.text }}</textarea>
     <div class="d-flex gap-2">
-        <button type="submit" class="btn btn-success btn-sm">Save</button>
+        <button type="submit" class="btn btn-dark mt-2 btn-sm">Save</button>
         <button type="button"
-                hx-get="{% url 'arts:detail' node.article.id %}" 
+                hx-get="{% url 'articles:detail' node.article.id %}" 
                 hx-select="#comment-{{ node.id }}" 
                 hx-target="closest form" 
-                hx-swap="outerHTML" 
-                class="btn btn-secondary btn-sm">
+                hx-swap="outerHTML"
+                class="btn btn-dark mt-2 btn-sm">
             Cancel
         </button>
     </div>

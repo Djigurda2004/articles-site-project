@@ -1,28 +1,37 @@
-{% if profile.user == request.user %}
-    <a href="{%url 'users:profile_edit'%}"><button type="submit">Edit</button></a>
-{% endif %}
-<p>{{profile.total_followers}} Followers</p>
-{%if request.user != profile.user and request.user.is_authenticated%}
-    <form method="post" action="{% url 'users:follow' profile.user.username %}">
-        {% csrf_token %}
-        {% if request.user in profile.followers.all %}
-            <button class="btn btn-danger">Unfollow</button>
+{% extends 'main/sidebar.html' %}
+{% load static%}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'articles/css/articles.css' %}">
+    <link rel="stylesheet" href="{% static 'users/css/users.css' %}">
+{%endblock%}
+{%block content%}
+<script src="https://unpkg.com/htmx.org@1.9.10"></script>
+<div class="profile-page-wrapper">
+    <div class="profile-info" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+        {% if profile.avatar %}
+            <img class="avatar" src="{{ profile.avatar.url }}">
         {% else %}
-            <button class="btn btn-primary">Follow</button>
+            <div class="empty-avatar">
+                <span>{{ profile.user.username|make_list|first|upper }}</span>
+            </div>
         {% endif %}
-    </form>
-{%endif%}
-<h2>{{ profile.user.username }}</h2>
-{% if profile.avatar %}
-    <img src="{{ profile.avatar.url }}" width="120">
-{% endif %}
-<p>{{ profile.bio }}</p>
-<h1>User articles</h1>
-{% for article in articles %}
-    <div class="alert alert-warning">
-        <h3>{{article.title}}</h3>
-        <a href="{%url 'arts:detail' article.id%}" class="btn btn-warning">More...</a>
+        <h1>{{ profile.user.username }}</h1>
+        {% if profile.bio %}
+            <p>{{ profile.bio }}</p>
+        {% endif %}
+        <p>{{profile.followers.count}} Followers</p>
+        {%if request.user != profile.user and request.user.is_authenticated%}
+            {% include "users/follow_area.html" with profile=profile%}
+        {%endif%}
+        {% if profile.user == request.user %}
+            <a href="{%url 'users:profile_edit'%}"><i class="fa-solid fa-pen"></i> edit profile</a>
+        {% endif %}
     </div>
-{% empty %}
-    <p>There are no articles</p>
-{% endfor %}
+    <div class="article-list">
+        <h1 class="text-center">User articles ({{articles.count}})</h1>
+        {% for article in articles %}
+            {%include 'articles/includes/article_card.html'%}
+        {% endfor %}
+    </div>
+</div>
+{%endblock%}

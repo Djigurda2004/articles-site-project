@@ -1,0 +1,59 @@
+{% extends 'main/sidebar.html' %}
+{% load mptt_tags %}
+{% load static%}
+{% block title %}{{article.title}}{% endblock %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'comments/css/comments.css' %}">
+    <link rel="stylesheet" href="{% static 'articles/css/articles.css' %}">
+{%endblock%}
+{% block content %}
+<script src="https://unpkg.com/htmx.org@1.9.10"></script>
+<div class="article-details-content" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+    <h1>{{article.title}}</h1>
+    <div class="author">
+        <span>Author:</span>
+        {% include "users/includes/user_badge.html" with account=article.author%}
+    </div>
+    <p>Published {{article.created_at|timesince}} ago</p>
+    <p>Views {{article.views}}</p>
+    <h3>Announcement</h3>
+    <p>{{article.announcement}}</p>
+    <h3>Content</h3>
+    <p>{{article.full_text}}</p>
+    <div class="mb-4">
+        {% if article.author == request.user %}
+            <a href="{% url 'articles:edit' article.id %}" class="icon-btn d-inline-block" title="Edit"><i class="fa-solid fa-pen"></i></a>
+            <form action="{% url 'articles:delete' article.id %}" method="post" class="d-inline-block">
+                {% csrf_token %}
+                <button class="icon-btn" title="Delete"><i class="fa-solid fa-trash"></i></button>
+            </form>
+        {% endif %}
+        {% if user.is_authenticated%}
+            {%include 'articles/like_area.html'%}
+        {% endif %}
+    </div>
+</div>
+<div class="article-details-comment" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+    <h3 class="text-center">Comments {{ article.comments.count }}</h3>
+    {% if user.is_authenticated %}
+    <div class="create-form">
+        <form hx-post="{% url 'comments:add' article.id %}" 
+              hx-target="#root-comments" 
+              hx-swap="afterbegin"
+              hx-on::after-request="this.reset()">
+              {% csrf_token %}
+            <textarea name="text" class="form-control" placeholder="Write a comment..." rows="2" required></textarea>
+            <button type="submit" class="btn btn-dark mt-2 btn-sm">Send</button>
+        </form>
+    </div>
+    {% else %}
+    <p><a href="{% url 'users:login' %}">Log in</a> to leave a comment.</p>
+    {% endif %}
+    <div id="root-comments" class="comment-tree">
+        {% load mptt_tags %}
+        {% recursetree article.comments.all %}
+            {% include "comments/comment_node.html" with node=node %}
+        {% endrecursetree %}
+    </div>
+</div>
+{% endblock %}

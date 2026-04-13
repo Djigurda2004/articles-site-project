@@ -1,18 +1,13 @@
-{%extends 'main/more.html'%}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Following</title>
-</head>
-<body>
-    {%for follow in following%}
-        <div>
-            <p>{{follow}}</p>
-        </div>
-    {%empty%}
-        <h1>You have not following</h1>
-    {%endfor%}
-</body>
-</html>
+{%extends 'main/sidebar.html'%}
+{%block content%}
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <div class="following-list" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+        <h1>Your following ({{following.count}})</h1>
+        {%for follow_profile in following%}
+            <div class="follow-card">
+                {% include "users/includes/user_badge.html" with account=follow_profile.user%}
+                {% include "users/follow_area.html" with profile=follow_profile%}
+            </div>
+        {%endfor%}
+    </div>
+{%endblock%}

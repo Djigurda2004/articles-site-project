@@ -9,6 +9,3 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.user.username
-    
-    def total_followers (self):
-        return self.followers.count()

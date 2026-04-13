@@ -1,0 +1,13 @@
+{%extends 'main/sidebar.html'%}
+{%load static%}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'articles/css/articles.css' %}">
+{%endblock%}
+{%block content%}
+<div class="article-list">
+    <h1 class="text-center">Your liked articles ({{articles.count}})</h1>
+    {%for article in articles%}
+        {%include 'articles/includes/article_card.html'%}
+    {%endfor%} 
+</div>
+{%endblock%}

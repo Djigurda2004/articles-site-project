@@ -1,15 +1,17 @@
+/* base side-bar styles */
+
 body {
     background: #2c2c2c;
 }
 
-.wrapper {
+.base-sidebar {
     display: flex;        
     align-items: flex-start; 
 }
 
-aside {
+.base-sidebar aside {
     background: white;
-    width: 20%;
+    width: 10%;
     padding: 2.5%;
     height: 100vh;
     color: #2c2c2c;
@@ -21,98 +23,70 @@ aside {
     box-sizing: border-box;
 }
 
-aside h3 {
-    margin-top: 50px;
-    font-size: 30px;
-}
-
-aside ul {
+.base-sidebar .nav-bar {
     list-style: none;
     text-decoration: none;
+    padding: 0;
 }
 
-aside ul li{
-    color:black;
-    display: block;
+.nav-item {
     margin-top: 20px;
-    transition: transform .5s ease;
 }
 
-a{
+.nav-item a:not(.btn), .nav-item .icon-btn {
+    color: black;
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 0;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: transform .5s ease, color .3s ease;
     text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
 }
 
-aside ul li:hover, aside ul a:hover{
-    color:#b8b8b8;
-    transform: scale(1.05);
+.nav-item a:not(.btn):hover, .nav-item .icon-btn:hover {
+    transform: scale(1.1);
 }
 
+.btn-create-article {
+    background-color: #b8b8b8 !important;
+    border-color:#b8b8b8 !important;
+}
+
+/* block content styles */
 main {
     flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     padding: 50px 20px;
 }
 
-main .features {
-    color: aliceblue;
-    float: left;
-    margin-top: 100px;
-    text-align: center;
-    width: 75%;
+html{
+    scrollbar-gutter: stable;
 }
 
-main .features h1 {
-    font-size: 50px;
+/* main page styles */
+
+.main-page-wrapper{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
 }
 
-main .features p {
-    max-width: 400px;
-    margin: 20px auto;
+.main-page-wrapper h1{
+    color: white;
 }
 
-main .mb-3{
-    margin: 50px auto;
-    width: 90%;
-    max-width: 450px;
+/* about page styles */
+
+.about-page-wrapper{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
 }
 
-.alert-warning {
-    width: 100%;
-    max-width: 450px;
-    margin: 50px auto;
-    text-align: left;
-    background: white;
-    border-color: black;
-    color: black;
-    overflow: hidden;
-}
-
-.alert-warning h3,.alert-warning p {
-    margin-top: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.btn-info {
-    background-color: #b8b8b8;
-    border-color:#b8b8b8; 
-}
-
-.btn-info:hover{
-    background-color:#b8b8b8;
-    border-color:#b8b8b8; 
-}
-
-main .create-form {
-    margin-left: 32%;
-    width: 500px;
-    margin-top: 50px;
-}
-
-.navbar-nav .ms-auto {
-    list-style: none;
-    text-decoration: none;
+.about-page-wrapper h1,.about-page-wrapper p{
+    color: white;
 }

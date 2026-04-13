@@ -1,0 +1,99 @@
+/* profile details styles */
+
+.profile-info{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+}
+
+.profile-info p,.profile-info h1,.profile-info a{
+    margin-top: 20px;
+    color: white;
+}
+
+.profile-info a{
+    text-decoration: none;
+}
+
+.avatar{
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.empty-avatar{
+    width:200px;
+    height:200px;
+    border-radius:50%;
+    background:#ddd;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink: 0;
+}
+
+.empty-avatar span{
+    font-size: 100px;
+    margin: 0;
+    line-height: 1;
+    color: #555;
+}
+
+/* user badge styles */
+.user-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.avatar-sm {
+    width: 30px;
+    height: 30px;
+}
+
+.empty-avatar-sm {
+    width: 30px;
+    height: 30px;
+}
+
+.empty-avatar-sm span {
+    font-size: 15px;
+}
+
+.user-badge a{
+    text-decoration: none;
+}
+
+/* following page and follow area styles */
+.following-list{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+}
+
+.follow-card {
+    width: 350px;
+    height: 60px;
+    margin-top: 15px;
+    padding: 0px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: white;
+    border:3px solid black;
+    border-radius: 8px;
+    color: black;
+}
+
+.btn-follow {
+    width:100px;
+    text-align: center;
+}
+
+.following-list h1{
+    color: white;
+}

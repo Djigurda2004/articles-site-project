@@ -1,10 +1,10 @@
 from django.db import models
-from arts.models import Articles
+from articles.models import Article
 from django.contrib.auth.models import User
 from mptt.models import MPTTModel, TreeForeignKey
 
 class Comment(MPTTModel):
-    article = models.ForeignKey(Articles,on_delete=models.CASCADE,related_name='comments')
+    article = models.ForeignKey(Article,on_delete=models.CASCADE,related_name='comments')
     author = models.ForeignKey(User,on_delete=models.CASCADE)
     text = models.TextField()
     parent = TreeForeignKey("self",on_delete=models.CASCADE,related_name='replies',blank=True,null=True)

@@ -1,13 +1,17 @@
-{% extends 'main/more.html' %}
+{% extends 'main/sidebar.html' %}
+{%load static%}
 {%block title%}Article form{%endblock%}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'articles/css/articles.css' %}">
+{%endblock%}
 {% block content %}
-    <div class="features">
+    <div class="article-create">
         <h1>Article form</h1>
         <form method="post" class="create-form">
             {% csrf_token %}
-            {{form.title}}<br>
-            {{form.anons}}<br>
-            {{form.full_text}}<br>
+            {{form.title}}
+            {{form.announcement}}
+            {{form.full_text}}
             <span>{{error}}</span>
             <button class="btn btn-success" type="submit">Save</button>
         </form>

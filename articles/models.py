@@ -1,11 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-class Articles(models.Model):
+class Article(models.Model):
     title = models.CharField('Name',max_length=50)
-    anons = models.CharField('Anons',max_length=250)
-    full_text= models.TextField('Article')
-    date = models.DateTimeField(auto_now_add=True)
+    announcement = models.CharField('Announcement',max_length=250)
+    full_text= models.TextField('Full text')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     author = models.ForeignKey(User,on_delete=models.CASCADE,related_name="articles",)
     likes = models.ManyToManyField(User, related_name="liked_articles", blank=True)
     views = models.IntegerField(default=0)
@@ -14,8 +15,9 @@ class Articles(models.Model):
         return f'Article: {self.title}'
     
     def get_absolute_url (self):
-        return f'/arts/{self.id}'
+        return f'/articles/{self.id}'
     
     class Meta:
+        
         verbose_name = 'Article'
         verbose_name_plural = 'Articles'
